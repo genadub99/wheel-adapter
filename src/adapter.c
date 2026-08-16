@@ -303,18 +303,11 @@ void tuh_mount_cb(uint8_t dev_addr) {
     uint16_t pid = 0;
 
     tuh_vid_pid_get(dev_addr, &vid, &pid);
+
+    printf("USB MOUNT: %04X:%04X\n", vid, pid);
+
     if (vid == NACON_VID && pid == NACON_PID) {
-    printf("NACON FOUND: %04X:%04X\n", vid, pid);
-}
-    if (vid == NACON_VID && pid == NACON_PID) {
-    gpio_put(DBG_NACON, 1);
-}
-if (vid == 0x146B && pid == 0x0603) {
-    gpio_put(DBG_NACON_HID, 1);
-}
-    // Nacon / BigBen Compact Controller
-    if (vid == 0x146B && pid == 0x0603) {
-        gpio_put(DBG_NACON_USB, 1);
+        gpio_put(DBG_NACON, 1);
     }
 }
 void tuh_hid_mount_cb(uint8_t dev_addr, uint8_t instance, uint8_t const* desc_report, uint16_t desc_len) {
