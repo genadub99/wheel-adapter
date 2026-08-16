@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tusb.h"
-#include "host/usbh_pvt.h"
+
 
 #include "bsp/board_api.h"
 #include "tusb.h"
@@ -364,20 +364,4 @@ void tuh_hid_report_received_cb(uint8_t dev_addr, uint8_t instance, uint8_t cons
     }
 
     tuh_hid_receive_report(dev_addr, instance);
-}
-static usbh_class_driver_t const nacon_class_driver = {
-#if CFG_TUSB_DEBUG >= 2
-    .name = "NACON",
-#endif
-    .init = nacon_host_init,
-    .open = nacon_host_open,
-    .set_config = nacon_host_set_config,
-    .xfer_cb = nacon_host_xfer_cb,
-    .close = nacon_host_close,
-};
-
-usbh_class_driver_t const* usbh_app_driver_get_cb(uint8_t* count)
-{
-    *count = 1;
-    return &nacon_class_driver;
 }
