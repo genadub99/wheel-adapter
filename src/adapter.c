@@ -2,6 +2,8 @@
 #include "pico/stdlib.h"
 #include <stdlib.h>
 #include <string.h>
+#include "tusb.h"
+#include "class/vendor/vendor_host.h"
 
 #include "bsp/board_api.h"
 #include "tusb.h"
@@ -16,6 +18,13 @@
 #define DBG_NACON_HID   3
 #define DBG_PS_AUTH     4
 #define DBG_AUTH_OK     5
+#define NACON_VID       0x146B
+#define NACON_PID       0x0603
+
+#define NACON_EP_IN     0x81
+#define NACON_EP_OUT    0x02
+
+#define NACON_PACKET_SIZE 64
 
 static void debug_pins_init(void) {
     gpio_init(DBG_NACON_USB);
@@ -160,7 +169,10 @@ int main() {
     report_init();
     tusb_init();
     stdio_init_all();
-
+    gpio_init(DBG_NACON);
+    gpio_set_dir(DBG_NACON, GPIO_OUT);
+    gpio_put(DBG_NACON, 0);
+    
     while (1) {
         tuh_task();
         tud_task();
@@ -291,6 +303,12 @@ void tuh_mount_cb(uint8_t dev_addr) {
     uint16_t pid = 0;
 
     tuh_vid_pid_get(dev_addr, &vid, &pid);
+    if (vid == NACON_VID && pid == NACON_PID) {
+    printf("NACON FOUND: %04X:%04X\n", vid, pid);
+}
+    if (vid == NACON_VID && pid == NACON_PID) {
+    gpio_put(DBG_NACON, 1);
+}
 if (vid == 0x146B && pid == 0x0603) {
     gpio_put(DBG_NACON_HID, 1);
 }
