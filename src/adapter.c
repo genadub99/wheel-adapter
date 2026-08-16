@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "pico/stdlib.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -8,6 +9,31 @@
 #include "pico/stdio.h"
 
 #include "reports.h"
+
+// Waveshare RP2040-Zero diagnostic pins
+// GP0/GP1 remain reserved for PIO USB D+/D-
+#define DBG_NACON_USB   2
+#define DBG_NACON_HID   3
+#define DBG_PS_AUTH     4
+#define DBG_AUTH_OK     5
+
+static void debug_pins_init(void) {
+    gpio_init(DBG_NACON_USB);
+    gpio_set_dir(DBG_NACON_USB, GPIO_OUT);
+    gpio_put(DBG_NACON_USB, 0);
+
+    gpio_init(DBG_NACON_HID);
+    gpio_set_dir(DBG_NACON_HID, GPIO_OUT);
+    gpio_put(DBG_NACON_HID, 0);
+
+    gpio_init(DBG_PS_AUTH);
+    gpio_set_dir(DBG_PS_AUTH, GPIO_OUT);
+    gpio_put(DBG_PS_AUTH, 0);
+
+    gpio_init(DBG_AUTH_OK);
+    gpio_set_dir(DBG_AUTH_OK, GPIO_OUT);
+    gpio_put(DBG_AUTH_OK, 0);
+}
 
 uint8_t nonce_id;
 uint8_t nonce[280];
@@ -130,6 +156,7 @@ void auth_task() {
 
 int main() {
     board_init();
+    debug_pins_init();
     report_init();
     tusb_init();
     stdio_init_all();
@@ -213,6 +240,7 @@ uint16_t tud_hid_get_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t
                 signature_part = 0;
                 printf("\n");
                 board_led_write(true);
+                gpio_put(DBG_AUTH_OK, 1);
             }
             return reqlen;
         }
@@ -244,6 +272,7 @@ void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t rep
         expected_part = part + 1;
         memcpy(&nonce[part * 56], &buffer[3], 56);
         if (part == 4) {
+            gpio_put(DBG_PS_AUTH, 1);
             nonce_ready = 1;
             printf("\n");
             printf("Sending reset to auth controller...\n");
@@ -257,7 +286,19 @@ void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t rep
         }
     }
 }
+void tuh_mount_cb(uint8_t dev_addr) {
+    uint16_t vid = 0;
+    uint16_t pid = 0;
 
+    tuh_vid_pid_get(dev_addr, &vid, &pid);
+if (vid == 0x146B && pid == 0x0603) {
+    gpio_put(DBG_NACON_HID, 1);
+}
+    // Nacon / BigBen Compact Controller
+    if (vid == 0x146B && pid == 0x0603) {
+        gpio_put(DBG_NACON_USB, 1);
+    }
+}
 void tuh_hid_mount_cb(uint8_t dev_addr, uint8_t instance, uint8_t const* desc_report, uint16_t desc_len) {
     uint16_t vid;
     uint16_t pid;
