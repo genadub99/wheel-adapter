@@ -1,0 +1,33 @@
+name: Build Waveshare wheel adapter
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install ARM toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential
+
+      - name: Build
+        run: |
+          cmake -S . -B build
+          cmake --build build -j2
+
+      - name: Upload UF2
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheel-adapter-waveshare-debug
+          path: build/adapter.uf2
