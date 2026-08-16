@@ -6,7 +6,7 @@ add_compile_definitions(PICO_DEFAULT_UART_RX_PIN=17)
 add_compile_definitions(PICO_DEFAULT_PIO_USB_DP_PIN=0)
 
 # Enable TinyUSB vendor-specific host class
-add_compile_definitions(CFG_TUH_VENDOR=1)
+
 
 set(PICO_SDK_PATH "${CMAKE_CURRENT_LIST_DIR}/pico-sdk")
 set(PICO_TINYUSB_PATH "${CMAKE_CURRENT_LIST_DIR}/tinyusb")
