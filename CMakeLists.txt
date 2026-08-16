@@ -27,4 +27,6 @@ target_link_libraries(adapter
     tinyusb_board
     tinyusb_pico_pio_usb
 )
+pico_enable_stdio_uart(adapter 0)
+pico_enable_stdio_usb(adapter 0)
 pico_add_extra_outputs(adapter)
