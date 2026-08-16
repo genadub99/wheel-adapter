@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tusb.h"
-#include "class/vendor/vendor_host.h"
 
 #include "bsp/board_api.h"
 #include "tusb.h"
