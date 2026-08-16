@@ -4,7 +4,6 @@
 #include <string.h>
 #include "tusb.h"
 #include "host/usbh_pvt.h"
-#include "nacon_host.h"
 
 #include "bsp/board_api.h"
 #include "tusb.h"
