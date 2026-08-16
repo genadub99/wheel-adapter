@@ -5,13 +5,16 @@ add_compile_definitions(PICO_DEFAULT_UART_TX_PIN=16)
 add_compile_definitions(PICO_DEFAULT_UART_RX_PIN=17)
 add_compile_definitions(PICO_DEFAULT_PIO_USB_DP_PIN=0)
 
+# Enable TinyUSB vendor-specific host class
+add_compile_definitions(CFG_TUH_VENDOR=1)
+
 set(PICO_SDK_PATH "${CMAKE_CURRENT_LIST_DIR}/pico-sdk")
 set(PICO_TINYUSB_PATH "${CMAKE_CURRENT_LIST_DIR}/tinyusb")
 set(PICO_PIO_USB_PATH "${CMAKE_CURRENT_LIST_DIR}/Pico-PIO-USB")
 
 include(pico_sdk_import.cmake)
 
-project(adapter)
+project(adapter C CXX ASM)
 
 pico_sdk_init()
 
@@ -19,7 +22,11 @@ add_executable(adapter
     src/adapter.c
     src/descriptors.c
 )
-target_include_directories(adapter PRIVATE src)
+
+target_include_directories(adapter PRIVATE
+    src
+)
+
 target_link_libraries(adapter
     pico_stdlib
     tinyusb_host
@@ -27,6 +34,8 @@ target_link_libraries(adapter
     tinyusb_board
     tinyusb_pico_pio_usb
 )
+
 pico_enable_stdio_uart(adapter 0)
 pico_enable_stdio_usb(adapter 0)
+
 pico_add_extra_outputs(adapter)
