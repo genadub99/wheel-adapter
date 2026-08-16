@@ -20,7 +20,7 @@
 #define DBG_AUTH_OK     5
 #define NACON_VID       0x146B
 #define NACON_PID       0x0603
-
+#define DBG_NACON 2
 #define NACON_EP_IN     0x81
 #define NACON_EP_OUT    0x02
 
@@ -169,9 +169,9 @@ int main() {
     report_init();
     tusb_init();
     stdio_init_all();
-    gpio_init(DBG_NACON);
-    gpio_set_dir(DBG_NACON, GPIO_OUT);
-    gpio_put(DBG_NACON, 0);
+    gpio_init(DBG_NACON_USB);
+    gpio_set_dir(DBG_NACON_USB, GPIO_OUT);
+    gpio_put(DBG_NACON_USB, 0);
     
     while (1) {
         tuh_task();
