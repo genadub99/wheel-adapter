@@ -9,9 +9,12 @@ extern "C" {
 
 bool nacon_host_init(void);
 
-uint8_t nacon_host_open(uint8_t dev_addr,
-                        tusb_desc_interface_t const* itf_desc,
-                        uint16_t max_len);
+bool nacon_host_open(uint8_t rhport,
+                     uint8_t dev_addr,
+                     tusb_desc_interface_t const* itf_desc,
+                     uint16_t max_len);
+
+bool nacon_host_set_config(uint8_t dev_addr, uint8_t itf_num);
 
 bool nacon_host_xfer_cb(uint8_t dev_addr,
                         uint8_t ep_addr,
