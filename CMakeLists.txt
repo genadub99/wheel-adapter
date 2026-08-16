@@ -21,7 +21,6 @@ pico_sdk_init()
 add_executable(adapter
     src/adapter.c
     src/descriptors.c
-    src/nacon_host.c
 )
 
 target_include_directories(adapter PRIVATE
