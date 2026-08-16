@@ -307,7 +307,7 @@ void tuh_mount_cb(uint8_t dev_addr) {
     printf("USB MOUNT: %04X:%04X\n", vid, pid);
 
     if (vid == NACON_VID && pid == NACON_PID) {
-        gpio_put(DBG_NACON, 1);
+        gpio_put(DBG_NACON_USB, 1);
     }
 }
 void tuh_hid_mount_cb(uint8_t dev_addr, uint8_t instance, uint8_t const* desc_report, uint16_t desc_len) {
